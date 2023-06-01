@@ -24,7 +24,11 @@ function App() {
               <tr key={name}>
                 <td>{name}</td>
                 <td><code>{value}</code></td>
-                <td><button onClick={() => { deleteApp.mutate(name); }}>❌</button></td>
+                <td>
+                  <button onClick={() => { deleteApp.mutate(name); }} disabled={deleteApp.isLoading}>{
+                    deleteApp.isLoading && deleteApp.variables == name ? "Deleting..." : "❌"
+                  }</button>
+                </td>
               </tr>
             ) :
             <tr><td colSpan={3}>(No apps)</td></tr>
@@ -32,7 +36,7 @@ function App() {
         <tr>
           <td><input form="add-app" value={newApp.name} onChange={e => { setNewApp({ ...newApp, name: e.target.value }); }} /></td>
           <td><input form="add-app" value={newApp.value} onChange={e => { setNewApp({ ...newApp, value: e.target.value }); }} /></td>
-          <td><button form="add-app">➕</button></td>
+          <td><button form="add-app" disabled={addApp.isLoading}>{addApp.isLoading ? "Adding..." : "➕"}</button></td>
         </tr>
         <form id="add-app" onSubmit={async e => {
           e.preventDefault();

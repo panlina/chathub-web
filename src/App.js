@@ -13,6 +13,11 @@ function App() {
     mutationFn: name => axios.delete(`/app/${name}`),
     onSuccess: (data, name) => { queryClient.setQueryData(['app'], old => (delete old[name], old)) }
   });
+  var [editedApp, setEditedApp] = useState();
+  var updateApp = useMutation({
+    mutationFn: () => axios.put(`/app/${editedApp.name}`, JSON.stringify(editedApp.value), { headers: { 'Content-Type': 'application/json' } }),
+    onSuccess: () => { queryClient.setQueryData(['app'], old => (old[editedApp.name] = editedApp.value, old)) }
+  });
   return <>
     <h1>Chathub</h1>
     <section>
@@ -23,11 +28,25 @@ function App() {
             Object.entries(app.data).map(([name, value]) =>
               <tr key={name}>
                 <td>{name}</td>
-                <td><code>{value}</code></td>
+                <td>{
+                  editedApp && editedApp.name == name ?
+                    <input form="update-app" value={editedApp.value} onChange={e => { setEditedApp({ ...editedApp, value: e.target.value }); }} /> :
+                    <code>{value}</code>
+                }</td>
                 <td>
-                  <button onClick={() => { deleteApp.mutate(name); }} disabled={deleteApp.isLoading}>{
+                  <button onClick={() => { deleteApp.mutate(name); }} disabled={deleteApp.isLoading || editedApp && editedApp.name == name}>{
                     deleteApp.isLoading && deleteApp.variables == name ? "Deleting..." : "❌"
                   }</button>
+                  {
+                    editedApp && editedApp.name == name && !updateApp.isLoading ?
+                      <>
+                        <button form="update-app">OK</button>
+                        <button form="update-app" onClick={() => { setEditedApp(undefined); }}>Cancel</button>
+                      </> :
+                      <button onClick={() => { setEditedApp({ name: name, value: value }); }} disabled={editedApp || deleteApp.isLoading && deleteApp.variables == name}>{
+                        updateApp.isLoading && editedApp.name == name ? "Updating..." : "🖊"
+                      }</button>
+                  }
                 </td>
               </tr>
             ) :
@@ -42,6 +61,11 @@ function App() {
           e.preventDefault();
           await addApp.mutateAsync();
           setNewApp({ name: '', value: '' });
+        }} />
+        <form id="update-app" onSubmit={async e => {
+          e.preventDefault();
+          await updateApp.mutateAsync();
+          setEditedApp(undefined);
         }} />
       </table>
     </section>

@@ -18,6 +18,11 @@ function App() {
     mutationFn: () => axios.put(`/app/${editedApp.name}`, JSON.stringify(editedApp.value), { headers: { 'Content-Type': 'application/json' } }),
     onSuccess: () => { queryClient.setQueryData(['app'], old => (old[editedApp.name] = editedApp.value, old)) }
   });
+  var [renamedApp, setRenamedApp] = useState();
+  var renameApp = useMutation({
+    mutationFn: () => axios(`/app/${renamedApp.name}`, { method: 'MOVE', headers: { 'Content-Type': 'application/json', 'Destination': `/app/${encodeURIComponent(renamedApp.newName)}` } }),
+    onSuccess: () => { queryClient.setQueryData(['app'], old => { var oldValue = old[renamedApp.name]; delete old[renamedApp.name]; old[renamedApp.newName] = oldValue; return old; }); }
+  });
   return <>
     <h1>Chathub</h1>
     <section>
@@ -27,14 +32,18 @@ function App() {
           Object.keys(app.data).length ?
             Object.entries(app.data).map(([name, value]) =>
               <tr key={name}>
-                <td>{name}</td>
+                <td>{
+                  renamedApp && renamedApp.name == name ?
+                    <input form="rename-app" value={renamedApp.newName} onChange={e => { setRenamedApp({ ...renamedApp, newName: e.target.value }); }} /> :
+                    name
+                }</td>
                 <td>{
                   editedApp && editedApp.name == name ?
                     <input form="update-app" value={editedApp.value} onChange={e => { setEditedApp({ ...editedApp, value: e.target.value }); }} /> :
                     <code>{value}</code>
                 }</td>
                 <td>
-                  <button onClick={() => { deleteApp.mutate(name); }} disabled={deleteApp.isLoading || editedApp && editedApp.name == name}>{
+                  <button onClick={() => { deleteApp.mutate(name); }} disabled={deleteApp.isLoading || editedApp && editedApp.name == name || renamedApp && renamedApp.name == name}>{
                     deleteApp.isLoading && deleteApp.variables == name ? "Deleting..." : "❌"
                   }</button>
                   {
@@ -43,8 +52,18 @@ function App() {
                         <button form="update-app">OK</button>
                         <button form="update-app" onClick={() => { setEditedApp(undefined); }}>Cancel</button>
                       </> :
-                      <button onClick={() => { setEditedApp({ name: name, value: value }); }} disabled={editedApp || deleteApp.isLoading && deleteApp.variables == name}>{
+                      <button onClick={() => { setEditedApp({ name: name, value: value }); }} disabled={editedApp || deleteApp.isLoading && deleteApp.variables == name || renamedApp && renamedApp.name == name}>{
                         updateApp.isLoading && editedApp.name == name ? "Updating..." : "🖊"
+                      }</button>
+                  }
+                  {
+                    renamedApp && renamedApp.name == name && !renameApp.isLoading ?
+                      <>
+                        <button form="rename-app">OK</button>
+                        <button form="rename-app" onClick={() => { setRenamedApp(undefined); }}>Cancel</button>
+                      </> :
+                      <button onClick={() => { setRenamedApp({ name: name, newName: name }); }} disabled={renamedApp || deleteApp.isLoading && deleteApp.variables == name || editedApp && editedApp.name == name}>{
+                        renameApp.isLoading && renamedApp.name == name ? "Renaming..." : "Rename"
                       }</button>
                   }
                 </td>
@@ -66,6 +85,11 @@ function App() {
           e.preventDefault();
           await updateApp.mutateAsync();
           setEditedApp(undefined);
+        }} />
+        <form id="rename-app" onSubmit={async e => {
+          e.preventDefault();
+          await renameApp.mutateAsync();
+          setRenamedApp(undefined);
         }} />
       </table>
     </section>

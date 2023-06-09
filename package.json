@@ -1,7 +1,10 @@
 {
   "name": "chathub-web",
   "version": "0.0.0",
-  "private": true,
+  "description": "wechaty-chathub web ui",
+  "keywords": ["wechaty", "chathub", "web", "ui"],
+  "author": "Jack Lu <jacklu@jacklu.me>",
+  "license": "ISC",
   "dependencies": {
     "@tanstack/react-query": "^4.29.12",
     "@testing-library/jest-dom": "^5.16.5",

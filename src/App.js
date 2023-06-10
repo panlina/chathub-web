@@ -43,7 +43,7 @@ function App() {
                     <code>{value}</code>
                 }</td>
                 <td>
-                  <button onClick={() => { deleteApp.mutate(name); }} disabled={deleteApp.isLoading || editedApp && editedApp.name == name || renamedApp && renamedApp.name == name}>{
+                  <button onClick={() => { deleteApp.mutate(name); }} disabled={addApp.isLoading || deleteApp.isLoading || editedApp || renamedApp}>{
                     deleteApp.isLoading && deleteApp.variables == name ? "Deleting..." : "❌"
                   }</button>
                   {
@@ -52,7 +52,7 @@ function App() {
                         <button form="update-app">OK</button>
                         <button form="update-app" onClick={() => { setEditedApp(undefined); }}>Cancel</button>
                       </> :
-                      <button onClick={() => { setEditedApp({ name: name, value: value }); }} disabled={editedApp || deleteApp.isLoading && deleteApp.variables == name || renamedApp && renamedApp.name == name}>{
+                      <button onClick={() => { setEditedApp({ name: name, value: value }); }} disabled={addApp.isLoading || deleteApp.isLoading || editedApp || renamedApp}>{
                         updateApp.isLoading && editedApp.name == name ? "Updating..." : "🖊"
                       }</button>
                   }
@@ -62,7 +62,7 @@ function App() {
                         <button form="rename-app">OK</button>
                         <button form="rename-app" onClick={() => { setRenamedApp(undefined); }}>Cancel</button>
                       </> :
-                      <button onClick={() => { setRenamedApp({ name: name, newName: name }); }} disabled={renamedApp || deleteApp.isLoading && deleteApp.variables == name || editedApp && editedApp.name == name}>{
+                      <button onClick={() => { setRenamedApp({ name: name, newName: name }); }} disabled={addApp.isLoading || deleteApp.isLoading || editedApp || renamedApp}>{
                         renameApp.isLoading && renamedApp.name == name ? "Renaming..." : "Rename"
                       }</button>
                   }
@@ -74,7 +74,7 @@ function App() {
         <tr>
           <td><input form="add-app" value={newApp.name} onChange={e => { setNewApp({ ...newApp, name: e.target.value }); }} /></td>
           <td><input form="add-app" value={newApp.value} onChange={e => { setNewApp({ ...newApp, value: e.target.value }); }} /></td>
-          <td><button form="add-app" disabled={addApp.isLoading}>{addApp.isLoading ? "Adding..." : "➕"}</button></td>
+          <td><button form="add-app" disabled={addApp.isLoading || deleteApp.isLoading || editedApp || renamedApp}>{addApp.isLoading ? "Adding..." : "➕"}</button></td>
         </tr>
         <form id="add-app" onSubmit={async e => {
           e.preventDefault();

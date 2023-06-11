@@ -43,9 +43,15 @@ function App() {
                     <code>{value}</code>
                 }</td>
                 <td>
-                  <button onClick={() => { deleteApp.mutate(name); }} disabled={addApp.isLoading || deleteApp.isLoading || editedApp || renamedApp}>{
-                    deleteApp.isLoading && deleteApp.variables == name ? "Deleting..." : "❌"
-                  }</button>
+                  <button
+                    onClick={async () => {
+                      try { await deleteApp.mutateAsync(name); }
+                      catch (e) { alert(e.response.data); }
+                    }}
+                    disabled={addApp.isLoading || deleteApp.isLoading || editedApp || renamedApp}
+                  >
+                    {deleteApp.isLoading && deleteApp.variables == name ? "Deleting..." : "❌"}
+                  </button>
                   {
                     editedApp && editedApp.name == name && !updateApp.isLoading ?
                       <>
@@ -78,18 +84,30 @@ function App() {
         </tr>
         <form id="add-app" onSubmit={async e => {
           e.preventDefault();
-          await addApp.mutateAsync();
-          setNewApp({ name: '', value: '' });
+          try {
+            await addApp.mutateAsync();
+            setNewApp({ name: '', value: '' });
+          } catch (e) {
+            alert(e.response.data);
+          }
         }} />
         <form id="update-app" onSubmit={async e => {
           e.preventDefault();
-          await updateApp.mutateAsync();
-          setEditedApp(undefined);
+          try {
+            await updateApp.mutateAsync();
+            setEditedApp(undefined);
+          } catch (e) {
+            alert(e.response.data);
+          }
         }} />
         <form id="rename-app" onSubmit={async e => {
           e.preventDefault();
-          await renameApp.mutateAsync();
-          setRenamedApp(undefined);
+          try {
+            await renameApp.mutateAsync();
+            setRenamedApp(undefined);
+          } catch (e) {
+            alert(e.response.data);
+          }
         }} />
       </table>
     </section>

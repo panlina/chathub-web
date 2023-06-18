@@ -16,12 +16,12 @@ export default function Table({
           <tr key={name}>
             <td>{
               renamed && renamed.name == name ?
-                <input form={renameFormId} value={renamed.newName} onChange={e => { setRenamed({ ...renamed, newName: e.target.value }); }} /> :
+                <input form={renameFormId} value={renamed.newName} onChange={e => { setRenamed({ ...renamed, newName: e.target.value }); }} disabled={rename.isLoading} /> :
                 name
             }</td>
             <td>{
               edited && edited.name == name ?
-                <input form={updateFormId} value={edited.value} onChange={e => { setEdited({ ...edited, value: e.target.value }); }} /> :
+                <input form={updateFormId} value={edited.value} onChange={e => { setEdited({ ...edited, value: e.target.value }); }} disabled={update.isLoading} /> :
                 renderValue ? renderValue(value) : value
             }</td>
             <td>
@@ -60,8 +60,8 @@ export default function Table({
         <tr><td colSpan={3}>(Nothing)</td></tr>
     }
     <tr>
-      <td><input form={addFormId} value={_new.name} onChange={e => { setNew({ ..._new, name: e.target.value }); }} /></td>
-      <td><input form={addFormId} value={_new.value} onChange={e => { setNew({ ..._new, value: e.target.value }); }} /></td>
+      <td><input form={addFormId} value={_new.name} onChange={e => { setNew({ ..._new, name: e.target.value }); }} disabled={add.isLoading} /></td>
+      <td><input form={addFormId} value={_new.value} onChange={e => { setNew({ ..._new, value: e.target.value }); }} disabled={add.isLoading} /></td>
       <td><button form={addFormId} disabled={add.isLoading || _delete.isLoading || edited || renamed}>{add.isLoading ? "Adding..." : "➕"}</button></td>
     </tr>
     <form id={addFormId} onSubmit={async e => {

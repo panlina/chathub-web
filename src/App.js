@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import Table from './Table';
+import './App.css';
 function App() {
   var queryClient = useQueryClient();
   return <>
@@ -33,7 +34,7 @@ function App() {
             onSuccess: (data, renamedApp) => { queryClient.setQueryData(['app'], old => { var oldValue = old[renamedApp.name]; delete old[renamedApp.name]; old[renamedApp.newName] = oldValue; return old; }); }
           })
         }
-        renderValue={value => <code>{value}</code>}
+        renderValue={value => <pre className="code-block"><code>{value}</code></pre>}
       />
     </section>
   </>;

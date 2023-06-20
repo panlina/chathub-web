@@ -35,6 +35,7 @@ function App() {
           })
         }
         renderValue={value => <pre className="code-block"><code>{value}</code></pre>}
+        renderValueEdit={({ form, value, onChange, disabled }) => <textarea form={form} value={value} onChange={e => { onChange(e.target.value); }} disabled={disabled} />}
       />
     </section>
   </>;

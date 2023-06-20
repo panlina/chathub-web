@@ -1,7 +1,7 @@
 import { useState, useId } from 'react';
 export default function Table({
   get, add, _delete, update, rename,
-  renderValue
+  renderValue, renderValueEdit
 }) {
   var [_new, setNew] = useState({ name: '', value: '' });
   var addFormId = useId();
@@ -21,7 +21,9 @@ export default function Table({
             }</td>
             <td>{
               edited && edited.name == name ?
-                <input form={updateFormId} value={edited.value} onChange={e => { setEdited({ ...edited, value: e.target.value }); }} disabled={update.isLoading} /> :
+                renderValueEdit ?
+                  renderValueEdit({ form: updateFormId, value: edited.value, onChange: value => { setEdited({ ...edited, value: value }); }, disabled: update.isLoading }) :
+                  <input form={updateFormId} value={edited.value} onChange={e => { setEdited({ ...edited, value: e.target.value }); }} disabled={update.isLoading} /> :
                 renderValue ? renderValue(value) : value
             }</td>
             <td>

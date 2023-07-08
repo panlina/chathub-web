@@ -34,6 +34,16 @@ function App() {
             onSuccess: (data, renamedApp) => { queryClient.setQueryData(['app'], old => { var oldValue = old[renamedApp.name]; delete old[renamedApp.name]; old[renamedApp.newName] = oldValue; return old; }); }
           })
         }
+        action={[
+          (value, name, { disabled }) => <button onClick={async () => {
+            var response = await axios.get(`/app/${name}/error`);
+            alert(
+              response.data
+                .map(error => `${new Date(error.time).toLocaleString()}\t${error.error}`)
+                .join('\n')
+            );
+          }} disabled={disabled}>Error log</button>
+        ]}
         renderValue={value => <pre className="code-block"><code>{value}</code></pre>}
         renderValueEdit={({ form, value, onChange, disabled }) => <textarea form={form} value={value} onChange={e => { onChange(e.target.value); }} disabled={disabled} />}
       />

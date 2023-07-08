@@ -1,6 +1,6 @@
 import { useState, useId } from 'react';
 export default function Table({
-  get, add, _delete, update, rename,
+  get, add, _delete, update, rename, action,
   renderValue, renderValueEdit
 }) {
   var [_new, setNew] = useState({ name: '', value: '' });
@@ -56,6 +56,7 @@ export default function Table({
                     rename.isLoading && renamed.name == name ? "Renaming..." : "Rename"
                   }</button>
               }
+              {action.map(action => action(value, name, { disabled: add.isLoading || _delete.isLoading || edited || renamed }))}
             </td>
           </tr>
         ) :

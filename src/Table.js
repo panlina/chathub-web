@@ -64,7 +64,11 @@ export default function Table({
     }
     <tr>
       <td><input form={addFormId} value={_new.name} onChange={e => { setNew({ ..._new, name: e.target.value }); }} disabled={add.isLoading} /></td>
-      <td><input form={addFormId} value={_new.value} onChange={e => { setNew({ ..._new, value: e.target.value }); }} disabled={add.isLoading} /></td>
+      <td>{
+        renderValueEdit ?
+          renderValueEdit({ form: addFormId, value: _new.value, onChange: value => { setNew({ ..._new, value: value }); }, disabled: add.isLoading }) :
+          <input form={addFormId} value={_new.value} onChange={e => { setNew({ ..._new, value: e.target.value }); }} disabled={add.isLoading} />
+      }</td>
       <td><button form={addFormId} disabled={add.isLoading || _delete.isLoading || edited || renamed}>{add.isLoading ? "Adding..." : "➕"}</button></td>
     </tr>
     <form id={addFormId} onSubmit={async e => {

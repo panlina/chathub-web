@@ -1,3 +1,16 @@
 pre.code-block {
   margin: initial;
 }
+
+html, body, #root, .ant-layout {
+	height: 100%;
+}
+
+.ant-layout-header > h1 {
+	margin-top: unset;
+	margin-bottom: unset;
+}
+
+.ant-layout-content {
+	padding: 20px;
+}

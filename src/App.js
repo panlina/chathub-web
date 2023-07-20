@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { Button, Input, Layout, theme } from 'antd';
+import { Button, Input, Table as AntTable, Modal, Layout, theme } from 'antd';
 import Table from './Table';
 import './App.css';
 function App() {
@@ -42,11 +42,19 @@ function App() {
           action={[
             (value, name, { disabled }) => <Button onClick={async () => {
               var response = await axios.get(`/app/${name}/error`);
-              alert(
-                response.data
-                  .map(error => `${new Date(error.time).toLocaleString()}\t${error.error}`)
-                  .join('\n')
-              );
+              var modal = Modal.info({ icon: null, width: 560, className: 'error-log-modal' });
+              modal.update({
+                content: <AntTable className="error-log-table"
+                  columns={[{
+                    title: "Time", dataIndex: 'time',
+                    render: time => new Date(time).toLocaleString()
+                  }, {
+                    title: "Error", dataIndex: 'error',
+                    render: error => <pre className="code-block">{error}</pre>
+                  }]}
+                  dataSource={response.data}
+                />
+              });
             }} disabled={disabled}>Error log</Button>
           ]}
           renderValue={value => <pre className="code-block"><code>{value}</code></pre>}

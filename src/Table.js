@@ -1,5 +1,5 @@
 import { useState, useId } from 'react';
-import { Button, Input, Table as AntTable } from 'antd';
+import { Button, Input, Table as AntTable, message } from 'antd';
 import { PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 export default function Table({
   get, add, _delete, update, rename, action,
@@ -33,7 +33,7 @@ export default function Table({
           <Button
             onClick={async () => {
               try { await _delete.mutateAsync(name); }
-              catch (e) { alert(e.response.data); }
+              catch (e) { message.error(e.response.data); }
             }}
             disabled={add.isLoading || _delete.isLoading || edited || renamed}
             loading={_delete.isLoading && _delete.variables == name}
@@ -82,7 +82,7 @@ export default function Table({
         await add.mutateAsync(_new);
         setNew({ name: '', value: '' });
       } catch (e) {
-        alert(e.response.data);
+        message.error(e.response.data);
       }
     }} />
     <form id={updateFormId} onSubmit={async e => {
@@ -91,7 +91,7 @@ export default function Table({
         await update.mutateAsync(edited);
         setEdited(undefined);
       } catch (e) {
-        alert(e.response.data);
+        message.error(e.response.data);
       }
     }} />
     <form id={renameFormId} onSubmit={async e => {
@@ -100,7 +100,7 @@ export default function Table({
         await rename.mutateAsync(renamed);
         setRenamed(undefined);
       } catch (e) {
-        alert(e.response.data);
+        message.error(e.response.data);
       }
     }} />
   </>;

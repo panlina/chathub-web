@@ -49,7 +49,12 @@ function App() {
                     title: "Time", dataIndex: 'time',
                     render: time => new Date(time).toLocaleString()
                   }, {
-                    title: "Error", dataIndex: 'error',
+                    title: "Location", dataIndex: 'location',
+                    render: location => location && <pre className="code-block">{
+                      require('ohm-js').util.getLineAndColumnMessage(value, location.start, [location.start, location.end])
+                    }</pre>
+                  }, {
+                    title: "Message", dataIndex: 'message',
                     render: error => <pre className="code-block">{error}</pre>
                   }]}
                   dataSource={response.data}

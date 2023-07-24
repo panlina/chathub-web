@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
+import axios from './axios';
 import { Button, Input, Table as AntTable, Modal, Layout, theme } from 'antd';
 import Table from './Table';
 import './App.css';

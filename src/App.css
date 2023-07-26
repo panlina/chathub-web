@@ -6,6 +6,10 @@ html, body, #root, .ant-layout {
 	height: 100%;
 }
 
+.ant-layout-header {
+	padding-inline: 20px;
+}
+
 .ant-layout-header > h1 {
 	margin-top: unset;
 	margin-bottom: unset;
